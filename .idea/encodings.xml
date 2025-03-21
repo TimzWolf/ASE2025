@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/0-ASE2025-plugins/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/0-ASE2025-plugins/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1-ASE2025-adapters/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/1-ASE2025-adapters/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2-ASE2025-application/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/2-ASE2025-application/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/3-ASE2025-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/3-ASE2025-domain/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/4-ASE2025-abstractioncode/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/4-ASE2025-abstractioncode/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/x-ASE2025/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/x-ASE2025/src/main/resources" charset="UTF-8" />
   </component>
 </project>
