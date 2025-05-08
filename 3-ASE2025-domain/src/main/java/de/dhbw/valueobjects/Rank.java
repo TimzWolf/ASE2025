@@ -1,28 +1,50 @@
 package de.dhbw.valueobjects;
 
+import java.util.Objects;
+
 /**
  * Represents the hierarchical rank of an officer.
  * Used as an immutable value object.
  */
-public enum Rank {
-    TRAINEE,
-    PATROL_OFFICER,
-    DETECTIVE,
-    INSPECTOR;
+public final class Rank implements Comparable<Rank> {
 
-    /**
-     * Returns the next rank, or the current one if already at the top.
-     */
-    public Rank next() {
-        int ordinal = this.ordinal();
-        return ordinal < values().length - 1 ? values()[ordinal + 1] : this;
+    private final String name;
+    private final int level; // e.g. Officer = 1, Inspector = 2, Chief = 3
+
+    public Rank(String name, int level) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Rank name must not be empty.");
+        this.name = name;
+        this.level = level;
     }
 
-    /**
-     * Returns the previous rank, or the current one if already at the lowest.
-     */
-    public Rank previous() {
-        int ordinal = this.ordinal();
-        return ordinal > 0 ? values()[ordinal - 1] : this;
+    public String getName() {
+        return name;
+    }
+
+    public boolean isHigherThan(Rank other) {
+        return this.level > other.level;
+    }
+
+    @Override
+    public int compareTo(Rank other) {
+        return Integer.compare(this.level, other.level);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Rank)) return false;
+        Rank rank = (Rank) o;
+        return level == rank.level && name.equals(rank.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, level);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -5,23 +5,16 @@ import de.dhbw.valueobjects.Rank;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Represents a police officer within the domain.
- * Officers are identified by a UUID and have a name and a rank.
- */
 public class Officer {
 
     private final UUID id;
     private final String name;
     private Rank rank;
 
-    public Officer(UUID id, String name, Rank rank) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Name must not be null or empty.");
-        }
-        this.id = Objects.requireNonNull(id, "ID must not be null.");
-        this.name = name;
-        this.rank = Objects.requireNonNull(rank, "Rank must not be null.");
+    public Officer(String name, Rank rank) {
+        this.id = UUID.randomUUID();
+        this.name = Objects.requireNonNull(name);
+        this.rank = Objects.requireNonNull(rank);
     }
 
     public UUID getId() {
@@ -36,17 +29,17 @@ public class Officer {
         return rank;
     }
 
-    /**
-     * Promotes the officer to the next rank, if available.
-     */
-    public void promote() {
-        this.rank = this.rank.next();
+    public void promoteTo(Rank newRank) {
+        if (!newRank.isHigherThan(this.rank)) {
+            throw new IllegalArgumentException("New rank must be higher.");
+        }
+        this.rank = newRank;
     }
 
-    /**
-     * Demotes the officer to the previous rank, if available.
-     */
-    public void demote() {
-        this.rank = this.rank.previous();
+    public void demoteTo(Rank newRank) {
+        if (newRank.isHigherThan(this.rank)) {
+            throw new IllegalArgumentException("New rank must be lower.");
+        }
+        this.rank = newRank;
     }
 }
