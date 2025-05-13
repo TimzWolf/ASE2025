@@ -1,5 +1,6 @@
-package de.dhbw.aggregates;
+package de.dhbw.repositories;
 
+import de.dhbw.aggregates.Room;
 import de.dhbw.valueobjects.RoomType;
 
 import java.util.List;

@@ -1,4 +1,6 @@
-package de.dhbw.aggregates;
+package de.dhbw.repositories;
+
+import de.dhbw.aggregates.Interrogation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
