@@ -90,4 +90,24 @@ public class RoomManagementService {
 
         return room.isAvailable();
     }
+    /**
+     * Retrieves all rooms registered in the system.
+     *
+     * @return List of all rooms
+     */
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
+    }
+
+    /**
+     * Retrieves all booked (unavailable) rooms in the system.
+     *
+     * @return List of all booked rooms
+     */
+    public List<Room> getAllBookedRooms() {
+        // Filter all rooms to find only those that are not available
+        return roomRepository.findAll().stream()
+                .filter(room -> !room.isAvailable())
+                .collect(java.util.stream.Collectors.toList());
+    }
 }

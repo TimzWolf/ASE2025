@@ -61,4 +61,28 @@ public class DetaineeService {
         return detaineeRepository.findById(detaineeId)
                 .orElseThrow(() -> new IllegalArgumentException("Detainee not found"));
     }
+
+    /**
+     * Retrieves all detainees registered in the system.
+     *
+     * @return List of all detainees
+     */
+    public List<Detainee> getAllDetainees() {
+        return detaineeRepository.findAll();
+    }
+
+    /**
+     * Releases a detainee from the system.
+     *
+     * @param detaineeId The ID of the detainee to release
+     * @throws IllegalArgumentException If detainee not found
+     */
+    public void releaseDetainee(UUID detaineeId) {
+        // Verify the detainee exists before attempting to delete
+        if (!detaineeRepository.findById(detaineeId).isPresent()) {
+            throw new IllegalArgumentException("Detainee not found");
+        }
+
+        detaineeRepository.deleteById(detaineeId);
+    }
 }
