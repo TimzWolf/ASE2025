@@ -1,6 +1,7 @@
-package de.dhbw.commands;
+package de.dhbw.commands.roomcommands;
 
 import de.dhbw.aggregates.Room;
+import de.dhbw.commands.AbstractCommand;
 import de.dhbw.usecases.GetAllRoomsUseCase;
 
 import java.util.List;
