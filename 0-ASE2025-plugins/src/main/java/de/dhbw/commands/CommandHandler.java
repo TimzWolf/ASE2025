@@ -1,4 +1,4 @@
-package de.dhbw.cli;
+package de.dhbw.commands;
 
 import de.dhbw.commands.Command;
 

@@ -1,5 +1,7 @@
-package de.dhbw.commands;
+package de.dhbw.cli;
 
+import de.dhbw.commands.*;
+import de.dhbw.commands.ChangeRankCommand;
 import de.dhbw.commands.detaineecommands.ListDetaineesCommand;
 import de.dhbw.commands.detaineecommands.RegisterDetaineeCommand;
 import de.dhbw.commands.detaineecommands.ReleaseDetaineeCommand;
@@ -8,7 +10,6 @@ import de.dhbw.commands.officercommands.RegisterOfficerCommand;
 import de.dhbw.commands.roomcommands.BookRoomCommand;
 import de.dhbw.commands.roomcommands.CreateRoomCommand;
 import de.dhbw.commands.roomcommands.ListRoomsCommand;
-import de.dhbw.commands.ChangeRankCommand;
 import de.dhbw.repositories.*;
 import de.dhbw.services.*;
 import de.dhbw.usecases.*;
@@ -21,7 +22,7 @@ import java.util.Scanner;
  * Main CLI application runner that sets up the command registry and manages the main input loop.
  */
 public class CliRunner {
-    private final de.dhbw.cli.CommandHandler commandHandler;
+    private final CommandHandler commandHandler;
     private final Scanner scanner;
 
     // Repositories
@@ -66,7 +67,7 @@ public class CliRunner {
             InterrogationRepository interrogationRepository,
             MeetingRepository meetingRepository) {
 
-        this.commandHandler = new de.dhbw.cli.CommandHandler();
+        this.commandHandler = new CommandHandler();
         this.scanner = new Scanner(System.in);
 
         // Set up repositories
