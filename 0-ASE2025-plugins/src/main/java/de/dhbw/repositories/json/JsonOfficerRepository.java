@@ -1,11 +1,11 @@
 package de.dhbw.repositories.json;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.dhbw.aggregates.Officer;
 import de.dhbw.repositories.OfficerRepository;
-import de.dhbw.valueobjects.Rank;
+import de.dhbw.repositories.json.deserializers.OfficerDeserializer;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * JSON implementation of the OfficerRepository interface.
@@ -16,6 +16,12 @@ public class JsonOfficerRepository extends JsonPersistenceBase<Officer> implemen
 
     public JsonOfficerRepository() {
         super("officers", Officer.class);
+
+        // Register the custom deserializer
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Officer.class, new OfficerDeserializer());
+        objectMapper.registerModule(module);
+
         loadOfficers();
     }
 

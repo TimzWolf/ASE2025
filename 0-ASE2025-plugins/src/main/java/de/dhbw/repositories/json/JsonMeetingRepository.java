@@ -28,7 +28,7 @@ public class JsonMeetingRepository extends JsonPersistenceBase<Meeting> implemen
         this.officerRepository = officerRepository;
         this.roomRepository = roomRepository;
 
-        // Register the custom deserializer that needs access to the repositories
+        // Register the custom deserializer
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Meeting.class, new MeetingDeserializer(
                 officerRepository, roomRepository));

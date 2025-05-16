@@ -8,25 +8,22 @@ import de.dhbw.valueobjects.Rank;
 
 import java.io.IOException;
 
-/**
- * Custom deserializer for Rank value objects.
- */
 public class RankDeserializer extends StdDeserializer<Rank> {
-    
+
     public RankDeserializer() {
         this(null);
     }
-    
+
     public RankDeserializer(Class<?> vc) {
         super(vc);
     }
-    
+
     @Override
     public Rank deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
         String name = node.get("name").asText();
         int level = node.get("level").asInt();
-        
+
         return new Rank(name, level);
     }
 }

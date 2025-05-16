@@ -1,6 +1,5 @@
 package de.dhbw.repositories.json;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.dhbw.aggregates.Interrogation;
 import de.dhbw.repositories.DetaineeRepository;
@@ -33,7 +32,7 @@ public class JsonInterrogationRepository extends JsonPersistenceBase<Interrogati
         this.detaineeRepository = detaineeRepository;
         this.roomRepository = roomRepository;
 
-        // Register the custom deserializer that needs access to the repositories
+        // Register the custom deserializer
         SimpleModule module = new SimpleModule();
         module.addDeserializer(Interrogation.class, new InterrogationDeserializer(
                 officerRepository, detaineeRepository, roomRepository));

@@ -1,7 +1,9 @@
 package de.dhbw.repositories.json;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.dhbw.aggregates.Detainee;
 import de.dhbw.repositories.DetaineeRepository;
+import de.dhbw.repositories.json.deserializers.DetaineeDeserializer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,6 +17,12 @@ public class JsonDetaineeRepository extends JsonPersistenceBase<Detainee> implem
 
     public JsonDetaineeRepository() {
         super("detainees", Detainee.class);
+
+        // Register the custom deserializer
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Detainee.class, new DetaineeDeserializer());
+        objectMapper.registerModule(module);
+
         loadDetainees();
     }
 

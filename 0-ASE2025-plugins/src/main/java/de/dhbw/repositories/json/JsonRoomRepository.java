@@ -1,7 +1,9 @@
 package de.dhbw.repositories.json;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.dhbw.aggregates.Room;
 import de.dhbw.repositories.RoomRepository;
+import de.dhbw.repositories.json.deserializers.RoomDeserializer;
 import de.dhbw.valueobjects.RoomType;
 
 import java.util.*;
@@ -16,6 +18,12 @@ public class JsonRoomRepository extends JsonPersistenceBase<Room> implements Roo
 
     public JsonRoomRepository() {
         super("rooms", Room.class);
+
+        // Register the custom deserializer
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(Room.class, new RoomDeserializer());
+        objectMapper.registerModule(module);
+
         loadRooms();
     }
 

@@ -20,10 +20,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-/**
- * Custom deserializer for Interrogation objects.
- * This is a more complex deserializer that requires repositories to look up referenced objects.
- */
 public class InterrogationDeserializer extends StdDeserializer<Interrogation> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
@@ -60,27 +56,32 @@ public class InterrogationDeserializer extends StdDeserializer<Interrogation> {
     public Interrogation deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
 
-        // Get the officer, detainee, and room from the repositories based on their IDs
+        // Extract the UUID
+        UUID id = UUID.fromString(node.get("id").asText());
+
+        // Get the officer from the repository based on ID or create one
         JsonNode officerNode = node.get("officer");
         UUID officerId = UUID.fromString(officerNode.get("id").asText());
         Officer officer = officerRepository.findById(officerId)
                 .orElseGet(() -> {
-                    String name = officerNode.get("name").asText();
+                    String officerName = officerNode.get("name").asText();
                     JsonNode rankNode = officerNode.get("rank");
                     String rankName = rankNode.get("name").asText();
                     int rankLevel = rankNode.get("level").asInt();
-                    return new Officer(name, new Rank(rankName, rankLevel));
+                    return new Officer(officerName, new Rank(rankName, rankLevel));
                 });
 
+        // Get the detainee from the repository based on ID or create one
         JsonNode detaineeNode = node.get("detainee");
         UUID detaineeId = UUID.fromString(detaineeNode.get("id").asText());
         Detainee detainee = detaineeRepository.findById(detaineeId)
                 .orElseGet(() -> {
-                    String name = detaineeNode.get("name").asText();
+                    String detaineeName = detaineeNode.get("name").asText();
                     String crime = detaineeNode.get("crime").asText();
-                    return new Detainee(name, crime);
+                    return new Detainee(detaineeName, crime);
                 });
 
+        // Get the room from the repository based on ID or create one
         JsonNode roomNode = node.get("room");
         UUID roomId = UUID.fromString(roomNode.get("id").asText());
         Room room = roomRepository.findById(roomId)
@@ -96,6 +97,18 @@ public class InterrogationDeserializer extends StdDeserializer<Interrogation> {
         // Parse the scheduled time
         LocalDateTime scheduledAt = LocalDateTime.parse(node.get("scheduledAt").asText(), FORMATTER);
 
-        return new Interrogation(officer, detainee, room, scheduledAt);
+        try {
+            // Create a new Interrogation
+            Interrogation interrogation = new Interrogation(officer, detainee, room, scheduledAt);
+
+            // Use reflection to set the id field
+            java.lang.reflect.Field idField = Interrogation.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            idField.set(interrogation, id);
+
+            return interrogation;
+        } catch (Exception e) {
+            throw new IOException("Could not deserialize Interrogation", e);
+        }
     }
 }
