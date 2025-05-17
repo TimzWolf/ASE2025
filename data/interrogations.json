@@ -1,7 +1,22 @@
 [ {
-  "id" : "70c33378-fdce-45b1-a0f0-48c2113f4239",
+  "id" : "4ebb068e-7f75-41a8-a4ab-6a0fd2e0b1bc",
   "officer" : {
     "id" : "e22cbd23-69a6-4785-901f-b8584427ab8d",
     "name" : "John Smith",
     "rank" : {
-      "name" : "Inspector"
+      "name" : "Inspector",
+      "level" : 4
+    }
+  },
+  "detainee" : {
+    "id" : "ccc6198f-de5b-475c-a294-5e65fa27c562",
+    "name" : "Alex Johnson",
+    "crime" : "Theft"
+  },
+  "room" : {
+    "id" : "64d4deec-385a-43fa-89f8-e0789327e877",
+    "type" : "INTERROGATION",
+    "available" : false
+  },
+  "scheduledAt" : "2023-12-15T14:30:00"
+} ]

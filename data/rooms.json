@@ -7,8 +7,20 @@
   "type" : "INTERROGATION",
   "available" : false
 }, {
+  "id" : "178a3f0c-364f-4f95-aa2a-2c90179b992a",
+  "type" : "INTERROGATION",
+  "available" : false
+}, {
+  "id" : "64d4deec-385a-43fa-89f8-e0789327e877",
+  "type" : "INTERROGATION",
+  "available" : false
+}, {
   "id" : "3825300d-e1d2-48a2-9c4a-aa2fd46bebbf",
   "type" : "MEETING",
+  "available" : false
+}, {
+  "id" : "727117cc-4979-4562-bb6f-bcb1d4678d56",
+  "type" : "INTERROGATION",
   "available" : false
 }, {
   "id" : "c103a9db-4be0-4a11-937e-cfe11cd5c5d9",

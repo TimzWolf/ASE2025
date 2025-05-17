@@ -64,46 +64,51 @@ public class MeetingDeserializer extends StdDeserializer<Meeting> {
 
     @Override
     public Meeting deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        // Ensure repositories are available
-        ensureRepositoriesInitialized();
-
-        JsonNode node = jp.getCodec().readTree(jp);
-
-        // Extract the UUID
-        UUID id = UUID.fromString(node.get("id").asText());
-
-        // Get the officer from the repository based on ID or create one
-        JsonNode officerNode = node.get("officer");
-        UUID officerId = UUID.fromString(officerNode.get("id").asText());
-        Officer officer = officerRepository.findById(officerId)
-                .orElseGet(() -> {
-                    String officerName = officerNode.get("name").asText();
-                    JsonNode rankNode = officerNode.get("rank");
-                    String rankName = rankNode.get("name").asText();
-                    int rankLevel = rankNode.get("level").asInt();
-                    return new Officer(officerName, new Rank(rankName, rankLevel));
-                });
-
-        // Get the informant name
-        String informantName = node.get("informantName").asText();
-
-        // Get the room from the repository based on ID or create one
-        JsonNode roomNode = node.get("room");
-        UUID roomId = UUID.fromString(roomNode.get("id").asText());
-        Room room = roomRepository.findById(roomId)
-                .orElseGet(() -> {
-                    RoomType type = RoomType.valueOf(roomNode.get("type").asText());
-                    Room newRoom = new Room(type);
-                    if (!roomNode.get("available").asBoolean()) {
-                        newRoom.book();
-                    }
-                    return newRoom;
-                });
-
-        // Parse the scheduled time
-        LocalDateTime scheduledAt = LocalDateTime.parse(node.get("scheduledAt").asText(), FORMATTER);
-
         try {
+            // Ensure repositories are available
+            ensureRepositoriesInitialized();
+
+            JsonNode node = jp.getCodec().readTree(jp);
+
+            // If node is empty or null, return null
+            if (node == null || node.isNull() || node.isEmpty()) {
+                return null;
+            }
+
+            // Extract the UUID
+            UUID id = UUID.fromString(node.get("id").asText());
+
+            // Get the officer from the repository based on ID or create one
+            JsonNode officerNode = node.get("officer");
+            UUID officerId = UUID.fromString(officerNode.get("id").asText());
+            Officer officer = officerRepository.findById(officerId)
+                    .orElseGet(() -> {
+                        String officerName = officerNode.get("name").asText();
+                        JsonNode rankNode = officerNode.get("rank");
+                        String rankName = rankNode.get("name").asText();
+                        int rankLevel = rankNode.has("level") ? rankNode.get("level").asInt() : 1;
+                        return new Officer(officerName, new Rank(rankName, rankLevel));
+                    });
+
+            // Get the informant name
+            String informantName = node.get("informantName").asText();
+
+            // Get the room from the repository based on ID or create one
+            JsonNode roomNode = node.get("room");
+            UUID roomId = UUID.fromString(roomNode.get("id").asText());
+            Room room = roomRepository.findById(roomId)
+                    .orElseGet(() -> {
+                        RoomType type = RoomType.valueOf(roomNode.get("type").asText());
+                        Room newRoom = new Room(type);
+                        if (!roomNode.get("available").asBoolean()) {
+                            newRoom.book();
+                        }
+                        return newRoom;
+                    });
+
+            // Parse the scheduled time
+            LocalDateTime scheduledAt = LocalDateTime.parse(node.get("scheduledAt").asText(), FORMATTER);
+
             // Create a new Meeting
             Meeting meeting = new Meeting(officer, informantName, room, scheduledAt);
 
@@ -114,6 +119,8 @@ public class MeetingDeserializer extends StdDeserializer<Meeting> {
 
             return meeting;
         } catch (Exception e) {
+            System.err.println("Error during Meeting deserialization: " + e.getMessage());
+            e.printStackTrace();
             throw new IOException("Could not deserialize Meeting", e);
         }
     }
