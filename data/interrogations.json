@@ -1,1 +1,7 @@
-[]
+[ {
+  "id" : "35ebfd89-4024-40c3-8d65-68efc8e27cfc",
+  "officer" : {
+    "id" : "e22cbd23-69a6-4785-901f-b8584427ab8d",
+    "name" : "John Smith",
+    "rank" : {
+      "name" : "Inspector"

@@ -2,4 +2,7 @@
   "id" : "e22cbd23-69a6-4785-901f-b8584427ab8d",
   "name" : "John Smith",
   "rank" : {
-    "name" : "Inspector"
+    "name" : "Inspector",
+    "level" : 4
+  }
+} ]

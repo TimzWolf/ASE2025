@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.dhbw.aggregates.Officer;
 import de.dhbw.repositories.OfficerRepository;
 import de.dhbw.repositories.json.deserializers.OfficerDeserializer;
+import de.dhbw.repositories.json.serializers.OfficerSerializer;
 
 import java.util.*;
 
@@ -17,8 +18,9 @@ public class JsonOfficerRepository extends JsonPersistenceBase<Officer> implemen
     public JsonOfficerRepository() {
         super("officers", Officer.class);
 
-        // Register the custom deserializer
+        // Register the custom serializer and deserializer
         SimpleModule module = new SimpleModule();
+        module.addSerializer(Officer.class, new OfficerSerializer());
         module.addDeserializer(Officer.class, new OfficerDeserializer());
         objectMapper.registerModule(module);
 
@@ -34,13 +36,16 @@ public class JsonOfficerRepository extends JsonPersistenceBase<Officer> implemen
         for (Officer officer : officerList) {
             officers.put(officer.getId(), officer);
         }
+        System.out.println("Loaded " + officers.size() + " officers from file");
     }
 
     /**
      * Saves officers to the JSON file.
      */
     private void saveOfficers() {
-        saveToFile(new ArrayList<>(officers.values()));
+        List<Officer> officerList = new ArrayList<>(officers.values());
+        saveToFile(officerList);
+        System.out.println("Saved " + officers.size() + " officers to file");
     }
 
     @Override

@@ -6,4 +6,8 @@
   "id" : "ccc6198f-de5b-475c-a294-5e65fa27c562",
   "name" : "Alex Johnson",
   "crime" : "Theft"
+}, {
+  "id" : "a01a515b-7f7a-43d3-b52e-06e621480745",
+  "name" : "Jack Detainee",
+  "crime" : "Theft"
 } ]

@@ -24,19 +24,18 @@ public class OfficerDeserializer extends StdDeserializer<Officer> {
     public Officer deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
 
-        // Extract the UUID
-        UUID id = UUID.fromString(node.get("id").asText());
-        String name = node.get("name").asText();
-
-        // Extract rank information
-        JsonNode rankNode = node.get("rank");
-        String rankName = rankNode.get("name").asText();
-        int rankLevel = rankNode.get("level").asInt();
-
-        Rank rank = new Rank(rankName, rankLevel);
-
-        // Create a new Officer with reflection to bypass constructor limitations
         try {
+            // Extract the UUID
+            UUID id = UUID.fromString(node.get("id").asText());
+            String name = node.get("name").asText();
+
+            // Extract rank information
+            JsonNode rankNode = node.get("rank");
+            String rankName = rankNode.get("name").asText();
+            int rankLevel = rankNode.has("level") ? rankNode.get("level").asInt() : 1;
+
+            // Create rank and officer objects
+            Rank rank = new Rank(rankName, rankLevel);
             Officer officer = new Officer(name, rank);
 
             // Use reflection to set the id field
@@ -46,6 +45,8 @@ public class OfficerDeserializer extends StdDeserializer<Officer> {
 
             return officer;
         } catch (Exception e) {
+            System.err.println("Error deserializing Officer: " + e.getMessage());
+            e.printStackTrace();
             throw new IOException("Could not deserialize Officer", e);
         }
     }

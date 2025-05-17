@@ -13,28 +13,34 @@ import java.io.IOException;
  * Prevents cycles and properly handles the serialization of Officer objects.
  */
 public class OfficerSerializer extends StdSerializer<Officer> {
-    
+
     public OfficerSerializer() {
         this(null);
     }
-    
+
     public OfficerSerializer(Class<Officer> t) {
         super(t);
     }
-    
+
     @Override
     public void serialize(Officer officer, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeStartObject();
-        gen.writeStringField("id", officer.getId().toString());
-        gen.writeStringField("name", officer.getName());
-        
-        // Serialize the rank
-        Rank rank = officer.getRank();
-        gen.writeObjectFieldStart("rank");
-        gen.writeStringField("name", rank.getName());
-        gen.writeNumberField("level", rank.compareTo(new Rank("", 0)));
-        gen.writeEndObject();
-        
-        gen.writeEndObject();
+        try {
+            gen.writeStartObject();
+            gen.writeStringField("id", officer.getId().toString());
+            gen.writeStringField("name", officer.getName());
+
+            // Serialize the rank
+            Rank rank = officer.getRank();
+            gen.writeObjectFieldStart("rank");
+            gen.writeStringField("name", rank.getName());
+            gen.writeNumberField("level", rank.getLevel());
+            gen.writeEndObject();
+
+            gen.writeEndObject();
+        } catch (Exception e) {
+            System.err.println("Error serializing Officer: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

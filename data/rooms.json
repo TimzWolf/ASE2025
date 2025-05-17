@@ -1,9 +1,17 @@
 [ {
-  "id" : "78f23a64-5910-40f4-91d6-4de2891af3ac",
-  "type" : "MEETING",
-  "available" : true
-}, {
-  "id" : "788ed274-1b75-4df0-9848-1d00fd6926a7",
+  "id" : "ea9ecadf-fb3e-4160-a4c8-070abddec450",
   "type" : "INTERROGATION",
-  "available" : true
+  "available" : false
+}, {
+  "id" : "6016535e-236d-4bc2-9746-a541a3f11fd4",
+  "type" : "INTERROGATION",
+  "available" : false
+}, {
+  "id" : "3825300d-e1d2-48a2-9c4a-aa2fd46bebbf",
+  "type" : "MEETING",
+  "available" : false
+}, {
+  "id" : "c103a9db-4be0-4a11-937e-cfe11cd5c5d9",
+  "type" : "INTERROGATION",
+  "available" : false
 } ]
