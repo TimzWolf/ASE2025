@@ -39,7 +39,7 @@ public class ListOfficersCommand extends AbstractCommand {
                         officer.getId(),
                         officer.getName(),
                         officer.getRank().getName(),
-                        officer.getRank().compareTo(new de.dhbw.valueobjects.Rank("", 0))));
+                        officer.getRank().getLevel()));  // Use getLevel() instead of comparing
             }
 
             return true;

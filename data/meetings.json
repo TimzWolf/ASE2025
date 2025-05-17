@@ -1,0 +1,18 @@
+[ {
+  "id" : "22b4f413-0282-4833-b49e-492000827bfd",
+  "officer" : {
+    "id" : "e22cbd23-69a6-4785-901f-b8584427ab8d",
+    "name" : "John Smith",
+    "rank" : {
+      "name" : "Sergeant",
+      "level" : 3
+    }
+  },
+  "informantName" : "Confidential Informant",
+  "room" : {
+    "id" : "48513eed-7ffb-4da6-8ac4-34a67cd67d86",
+    "type" : "MEETING",
+    "available" : false
+  },
+  "scheduledAt" : "2023-12-16T10:00:00"
+} ]

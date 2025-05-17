@@ -47,4 +47,8 @@ public final class Rank implements Comparable<Rank> {
     public String toString() {
         return name;
     }
+
+    public int getLevel() {
+        return level;
+    }
 }
