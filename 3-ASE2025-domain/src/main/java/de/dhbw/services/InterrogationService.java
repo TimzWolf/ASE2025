@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class InterrogationService {
+    private static final Rank MINIMUM_RANK_FOR_INTERROGATION = new Rank("Sergeant", 3);
     private final RoomRepository roomRepository;
     private final OfficerRepository officerRepository;
     private final InterrogationRepository interrogationRepository;
@@ -38,13 +39,11 @@ public class InterrogationService {
             Detainee detainee,
             LocalDateTime scheduledTime) {
 
-        // Find an available officer
         Officer officer = officerRepository.findById(officerId)
                 .orElseThrow(() -> new IllegalArgumentException("Officer not found"));
 
-        // Verify officer has sufficient rank
-        Rank minimumRank = new Rank("Sergeant", 3); // Example minimum rank
-        if (officer.getRank().compareTo(minimumRank) < 0) {
+        // Verwendung der symbolischen Konstante
+        if (officer.getRank().compareTo(MINIMUM_RANK_FOR_INTERROGATION) < 0) {
             throw new IllegalStateException("Officer does not have sufficient rank for interrogation");
         }
 

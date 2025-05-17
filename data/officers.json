@@ -6,6 +6,13 @@
     "level" : 4
   }
 }, {
+  "id" : "c65327b5-64c9-4a18-846f-02f305154552",
+  "name" : "John Smith",
+  "rank" : {
+    "name" : "Sergeant",
+    "level" : 2
+  }
+}, {
   "id" : "a3b756c2-8a22-413e-809c-05ad2b975141",
   "name" : "John Smith",
   "rank" : {
