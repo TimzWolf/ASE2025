@@ -3,11 +3,11 @@ package de.dhbw.repositories.json;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.dhbw.aggregates.*;
 import de.dhbw.repositories.json.deserializers.*;
 import de.dhbw.repositories.json.serializers.*;
 import de.dhbw.valueobjects.Rank;
-import de.dhbw.valueobjects.RoomType;
 
 /**
  * Configuration for Jackson JSON serialization of domain objects.
@@ -24,6 +24,9 @@ public class JsonDomainModule {
     public static void configureObjectMapper(ObjectMapper objectMapper) {
         SimpleModule module = new SimpleModule("DomainModule");
 
+        // Register JavaTimeModule for proper handling of date/time types
+        objectMapper.registerModule(new JavaTimeModule());
+
         // Configure object mapper to be more lenient
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
@@ -35,9 +38,7 @@ public class JsonDomainModule {
         module.addSerializer(Detainee.class, new DetaineeSerializer());
         module.addSerializer(Interrogation.class, new InterrogationSerializer());
         module.addSerializer(Meeting.class, new MeetingSerializer());
-
-        // Only use this if you created a RankSerializer
-        // module.addSerializer(Rank.class, new RankSerializer());
+        module.addSerializer(Rank.class, new RankSerializer());
 
         // Register custom deserializers
         module.addDeserializer(Rank.class, new RankDeserializer());

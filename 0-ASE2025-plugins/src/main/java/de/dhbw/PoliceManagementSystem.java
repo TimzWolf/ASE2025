@@ -4,6 +4,11 @@ import de.dhbw.cli.CliRunner;
 import de.dhbw.repositories.*;
 import de.dhbw.repositories.json.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Main application entry point for the Police Management System.
  * Uses JSON repositories for persistent storage.
@@ -19,7 +24,7 @@ public class PoliceManagementSystem {
             System.out.println("Data will be stored in the '" + DataDirectoryManager.getDataDirectory() + "' directory.");
 
             // Create empty JSON files if they don't exist
-            ensureEmptyJsonFilesExist();
+            ensureValidJsonFilesExist();
 
             // Create the JSON repository factory - this will also initialize the repository registry
             JsonRepositoryFactory repositoryFactory = new JsonRepositoryFactory();
@@ -52,31 +57,52 @@ public class PoliceManagementSystem {
     }
 
     /**
-     * Ensures that all required JSON files exist, creating empty ones if necessary.
+     * Ensures that all required JSON files exist and contain valid JSON.
      */
-    private static void ensureEmptyJsonFilesExist() {
+    private static void ensureValidJsonFilesExist() {
         try {
             String[] entityNames = {"rooms", "officers", "detainees", "interrogations", "meetings"};
+            String dataDir = DataDirectoryManager.getDataDirectory();
+
             for (String entityName : entityNames) {
-                java.nio.file.Path filePath = java.nio.file.Paths.get(
-                        DataDirectoryManager.getDataDirectory(),
-                        entityName + ".json");
+                Path filePath = Paths.get(dataDir, entityName + ".json");
 
-                if (!java.nio.file.Files.exists(filePath)) {
-                    // Create directory if it doesn't exist
-                    java.nio.file.Files.createDirectories(filePath.getParent());
+                // Check if file exists
+                if (!Files.exists(filePath)) {
+                    // Create parent directories if needed
+                    Files.createDirectories(filePath.getParent());
 
-                    // Create empty array as initial content
-                    java.nio.file.Files.writeString(filePath, "[]");
-                    System.out.println("Created empty file: " + filePath);
-                } else if (java.nio.file.Files.size(filePath) == 0) {
-                    // If file exists but is empty, write empty array
-                    java.nio.file.Files.writeString(filePath, "[]");
-                    System.out.println("Updated empty file with valid JSON: " + filePath);
+                    // Create empty array file
+                    Files.writeString(filePath, "[]");
+                    System.out.println("Created empty JSON file: " + filePath);
+                } else {
+                    // File exists, check if it's valid JSON
+                    String content = Files.readString(filePath);
+                    content = content.trim();
+
+                    if (content.isEmpty() || content.equals("null")) {
+                        // If file is empty or just contains "null", write an empty array
+                        Files.writeString(filePath, "[]");
+                        System.out.println("Replaced invalid content with empty array in: " + filePath);
+                    } else if (!content.startsWith("[") || !content.endsWith("]")) {
+                        // Not a valid JSON array, replace with empty array
+                        System.out.println("Warning: Invalid JSON in " + filePath + ", replacing with empty array");
+                        Files.writeString(filePath, "[]");
+                    }
+
+                    // Try to validate JSON by parsing it
+                    try {
+                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                        mapper.readTree(filePath.toFile());
+                    } catch (Exception e) {
+                        System.out.println("Warning: Invalid JSON in " + filePath + ", replacing with empty array");
+                        Files.writeString(filePath, "[]");
+                    }
                 }
             }
-        } catch (Exception e) {
-            System.err.println("Error creating empty JSON files: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error ensuring valid JSON files: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

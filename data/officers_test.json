@@ -1,0 +1,15 @@
+[ {
+  "id" : "238cc425-83a0-4ee8-820c-364fbce82d72",
+  "name" : "John Smith",
+  "rank" : {
+    "name" : "Inspector",
+    "level" : 4
+  }
+}, {
+  "id" : "c88b87f0-8142-44b5-af5c-e6e02d067dce",
+  "name" : "Jane Doe",
+  "rank" : {
+    "name" : "Sergeant",
+    "level" : 3
+  }
+} ]
