@@ -50,6 +50,7 @@ public class CliRunner {
     private final ReleaseDetaineeUseCase releaseDetaineeUseCase;
     private final InterrogateDetaineeUseCase interrogateDetaineeUseCase;
     private final ScheduleMeetingUseCase scheduleMeetingUseCase;
+    private final GetOfficerInterrogationsUseCase getOfficerInterrogationsUseCase;
 
     /**
      * Creates a new CLI runner with all necessary dependencies.
@@ -98,6 +99,8 @@ public class CliRunner {
         this.interrogateDetaineeUseCase = new InterrogateDetaineeUseCase(
                 interrogationService, detaineeService);
         this.scheduleMeetingUseCase = new ScheduleMeetingUseCase(meetingService);
+        this.getOfficerInterrogationsUseCase = new GetOfficerInterrogationsUseCase(
+                interrogationRepository, officerRepository);
 
         // Register commands
         registerCommands();
@@ -118,6 +121,7 @@ public class CliRunner {
         Command registerOfficerCommand = new RegisterOfficerCommand(officerService);
         Command changeRankCommand = new ChangeRankCommand(changeRankUseCase);
         Command listOfficersCommand = new ListOfficersCommand(officerRepository);
+        Command listOfficerInterrogationsCommand = new ListOfficerInterrogationsCommand(getOfficerInterrogationsUseCase);
 
         // Detainee management commands
         Command registerDetaineeCommand = new RegisterDetaineeCommand(registerDetaineeUseCase);
@@ -135,6 +139,7 @@ public class CliRunner {
         commands.add(registerOfficerCommand);
         commands.add(changeRankCommand);
         commands.add(listOfficersCommand);
+        commands.add(listOfficerInterrogationsCommand);
         commands.add(registerDetaineeCommand);
         commands.add(listDetaineesCommand);
         commands.add(releaseDetaineeCommand);

@@ -6,8 +6,4 @@
   "id" : "cfb4e141-0e18-4e82-baf2-d64f09708387",
   "type" : "INTERROGATION",
   "available" : false
-}, {
-  "id" : "651ae27c-1d58-44cd-b0e6-673b9d8a9729",
-  "type" : "INTERROGATION",
-  "available" : true
-} ]
+}]

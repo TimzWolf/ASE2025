@@ -5,4 +5,11 @@
     "name" : "Inspector",
     "level" : 4
   }
-}]
+}, {
+  "id" : "a3b756c2-8a22-413e-809c-05ad2b975141",
+  "name" : "John Smith",
+  "rank" : {
+    "name" : "Sergeant",
+    "level" : 3
+  }
+} ]
