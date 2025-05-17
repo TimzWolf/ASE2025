@@ -4,6 +4,7 @@ import de.dhbw.aggregates.*;
 import de.dhbw.repositories.InterrogationRepository;
 import de.dhbw.repositories.OfficerRepository;
 import de.dhbw.repositories.RoomRepository;
+import de.dhbw.valueobjects.InterrogationRequest;
 import de.dhbw.valueobjects.Rank;
 import de.dhbw.valueobjects.RoomType;
 
@@ -34,12 +35,8 @@ public class InterrogationService {
      * - Room must be of type INTERROGATION and available
      * - No other interrogation in the same room at the same time
      */
-    public Interrogation scheduleInterrogation(
-            UUID officerId,
-            Detainee detainee,
-            LocalDateTime scheduledTime) {
-
-        Officer officer = officerRepository.findById(officerId)
+    public Interrogation scheduleInterrogation(InterrogationRequest request) {
+        Officer officer = officerRepository.findById(request.getOfficerId())
                 .orElseThrow(() -> new IllegalArgumentException("Officer not found"));
 
         // Verwendung der symbolischen Konstante
