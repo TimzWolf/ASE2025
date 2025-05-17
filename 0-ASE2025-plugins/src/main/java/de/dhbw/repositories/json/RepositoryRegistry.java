@@ -14,6 +14,7 @@ public class RepositoryRegistry {
     private DetaineeRepository detaineeRepository;
     private InterrogationRepository interrogationRepository;
     private MeetingRepository meetingRepository;
+    private boolean isInitialized = false;
 
     /**
      * Gets the singleton instance of the registry.
@@ -54,14 +55,26 @@ public class RepositoryRegistry {
         this.detaineeRepository = detaineeRepository;
         this.interrogationRepository = interrogationRepository;
         this.meetingRepository = meetingRepository;
+        this.isInitialized = true;
+    }
+
+    /**
+     * Checks if the registry is initialized with repositories.
+     *
+     * @return true if repositories are registered, false otherwise
+     */
+    public boolean isInitialized() {
+        return isInitialized;
     }
 
     /**
      * Gets the room repository.
      *
      * @return The room repository
+     * @throws IllegalStateException if repository is not registered
      */
     public RoomRepository getRoomRepository() {
+        checkInitialized();
         return roomRepository;
     }
 
@@ -69,8 +82,10 @@ public class RepositoryRegistry {
      * Gets the officer repository.
      *
      * @return The officer repository
+     * @throws IllegalStateException if repository is not registered
      */
     public OfficerRepository getOfficerRepository() {
+        checkInitialized();
         return officerRepository;
     }
 
@@ -78,8 +93,10 @@ public class RepositoryRegistry {
      * Gets the detainee repository.
      *
      * @return The detainee repository
+     * @throws IllegalStateException if repository is not registered
      */
     public DetaineeRepository getDetaineeRepository() {
+        checkInitialized();
         return detaineeRepository;
     }
 
@@ -87,8 +104,10 @@ public class RepositoryRegistry {
      * Gets the interrogation repository.
      *
      * @return The interrogation repository
+     * @throws IllegalStateException if repository is not registered
      */
     public InterrogationRepository getInterrogationRepository() {
+        checkInitialized();
         return interrogationRepository;
     }
 
@@ -96,8 +115,21 @@ public class RepositoryRegistry {
      * Gets the meeting repository.
      *
      * @return The meeting repository
+     * @throws IllegalStateException if repository is not registered
      */
     public MeetingRepository getMeetingRepository() {
+        checkInitialized();
         return meetingRepository;
+    }
+
+    /**
+     * Checks if the registry is initialized and throws an exception if not.
+     *
+     * @throws IllegalStateException if repositories are not registered
+     */
+    private void checkInitialized() {
+        if (!isInitialized) {
+            throw new IllegalStateException("Required repositories not provided or registered");
+        }
     }
 }

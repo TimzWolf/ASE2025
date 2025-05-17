@@ -1,5 +1,9 @@
 [ {
+  "id" : "298dd7fa-db3e-41c7-9e30-ed044c87af38",
+  "name" : "Jack Detainee",
+  "crime" : "Theft"
+}, {
   "id" : "ccc6198f-de5b-475c-a294-5e65fa27c562",
   "name" : "Alex Johnson",
   "crime" : "Theft"
-}]
+} ]

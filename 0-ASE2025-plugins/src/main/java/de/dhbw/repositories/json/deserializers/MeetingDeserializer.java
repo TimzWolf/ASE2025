@@ -21,8 +21,9 @@ import java.util.UUID;
 public class MeetingDeserializer extends StdDeserializer<Meeting> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    private final OfficerRepository officerRepository;
-    private final RoomRepository roomRepository;
+    private OfficerRepository officerRepository;
+    private RoomRepository roomRepository;
+    private boolean repositoriesInitialized = false;
 
     public MeetingDeserializer(
             OfficerRepository officerRepository,
@@ -35,18 +36,37 @@ public class MeetingDeserializer extends StdDeserializer<Meeting> {
             OfficerRepository officerRepository,
             RoomRepository roomRepository) {
         super(vc);
-        this.officerRepository = officerRepository != null ? officerRepository :
-                (RepositoryRegistry.getInstance() != null ? RepositoryRegistry.getInstance().getOfficerRepository() : null);
-        this.roomRepository = roomRepository != null ? roomRepository :
-                (RepositoryRegistry.getInstance() != null ? RepositoryRegistry.getInstance().getRoomRepository() : null);
+        this.officerRepository = officerRepository;
+        this.roomRepository = roomRepository;
 
-        if (this.officerRepository == null || this.roomRepository == null) {
-            throw new IllegalStateException("Required repositories not provided or registered");
+        // Check if repositories are already provided
+        this.repositoriesInitialized = (officerRepository != null && roomRepository != null);
+    }
+
+    /**
+     * Ensures repositories are initialized before using them.
+     *
+     * @throws IllegalStateException if repositories cannot be initialized
+     */
+    private void ensureRepositoriesInitialized() {
+        if (!repositoriesInitialized) {
+            // Try to get repositories from registry
+            RepositoryRegistry registry = RepositoryRegistry.getInstance();
+            if (registry.isInitialized()) {
+                this.officerRepository = registry.getOfficerRepository();
+                this.roomRepository = registry.getRoomRepository();
+                this.repositoriesInitialized = true;
+            } else {
+                throw new IllegalStateException("Required repositories not provided or registered");
+            }
         }
     }
 
     @Override
     public Meeting deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        // Ensure repositories are available
+        ensureRepositoriesInitialized();
+
         JsonNode node = jp.getCodec().readTree(jp);
 
         // Extract the UUID

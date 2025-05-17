@@ -10,9 +10,11 @@ import de.dhbw.valueobjects.RoomType;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Domain service handling operations related to interrogations.
+ */
 public class InterrogationService {
     private static final Rank MINIMUM_RANK_FOR_INTERROGATION = new Rank("Sergeant", 3);
     private final RoomRepository roomRepository;
@@ -39,7 +41,7 @@ public class InterrogationService {
         Officer officer = officerRepository.findById(request.getOfficerId())
                 .orElseThrow(() -> new IllegalArgumentException("Officer not found"));
 
-        // Verwendung der symbolischen Konstante
+        // Check if officer has sufficient rank
         if (officer.getRank().compareTo(MINIMUM_RANK_FOR_INTERROGATION) < 0) {
             throw new IllegalStateException("Officer does not have sufficient rank for interrogation");
         }
@@ -66,7 +68,12 @@ public class InterrogationService {
         room.book();
         roomRepository.save(room);
 
-        Interrogation interrogation = new Interrogation(officer, request.getDetainee(), room, request.getScheduledTime());
+        Interrogation interrogation = new Interrogation(
+                officer,
+                request.getDetainee(),
+                room,
+                request.getScheduledTime());
+
         interrogationRepository.save(interrogation);
 
         return interrogation;

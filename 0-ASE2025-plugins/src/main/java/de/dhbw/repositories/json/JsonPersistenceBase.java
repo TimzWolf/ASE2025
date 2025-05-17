@@ -2,6 +2,7 @@ package de.dhbw.repositories.json;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -23,7 +24,6 @@ public abstract class JsonPersistenceBase<T> {
     protected final String dataDirectory;
     protected final String entityName;
     protected final Class<T> entityClass;
-    protected final Class<List<T>> listClass;
 
     /**
      * Creates a new JSON persistence base.
@@ -31,11 +31,9 @@ public abstract class JsonPersistenceBase<T> {
      * @param entityName The name of the entity (used for file naming)
      * @param entityClass The class of the entity
      */
-    @SuppressWarnings("unchecked")
     public JsonPersistenceBase(String entityName, Class<T> entityClass) {
         this.entityName = entityName;
         this.entityClass = entityClass;
-        this.listClass = (Class<List<T>>) (Class<?>) List.class;
         this.dataDirectory = "data";
 
         // Initialize Jackson ObjectMapper with proper configuration
@@ -47,6 +45,13 @@ public abstract class JsonPersistenceBase<T> {
         // Configure object mapper to use fields rather than getters/setters
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+        // Configure to handle missing values gracefully
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+
+        // Configure the JSON domain module
+        JsonDomainModule.configureObjectMapper(objectMapper);
 
         // Ensure data directory exists
         createDataDirectoryIfNotExists();
@@ -96,10 +101,22 @@ public abstract class JsonPersistenceBase<T> {
         }
 
         try {
+            // Check if file is empty
+            if (Files.size(filePath) == 0) {
+                return Collections.emptyList();
+            }
+
+            String content = Files.readString(filePath);
+            if (content.trim().isEmpty() || content.trim().equals("[]")) {
+                return Collections.emptyList();
+            }
+
             return objectMapper.readValue(filePath.toFile(),
                     objectMapper.getTypeFactory().constructCollectionType(List.class, entityClass));
         } catch (IOException e) {
-            throw new RuntimeException("Error loading " + entityName + " from JSON file", e);
+            System.err.println("Error loading " + entityName + " from JSON file: " + e.getMessage());
+            // Return empty list instead of throwing exception to allow application to start
+            return Collections.emptyList();
         }
     }
 }

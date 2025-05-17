@@ -1,6 +1,7 @@
 package de.dhbw.repositories.json;
 
 import de.dhbw.repositories.*;
+import de.dhbw.repositories.json.deserializers.*;
 
 /**
  * Factory for creating JSON repositories with proper dependencies.
@@ -17,31 +18,56 @@ public class JsonRepositoryFactory {
      * Creates all repositories with proper dependencies.
      */
     public JsonRepositoryFactory() {
-        initializeRepositories();
+        // First, create basic repositories without complex dependencies
+        createBasicRepositories();
 
-        // Register repositories in the registry for use during deserialization
+        // Register these repositories in the registry for use during deserialization
+        registerRepositories();
+
+        // Now create repositories with dependencies after registry is set up
+        createDependentRepositories();
+    }
+
+    /**
+     * Creates basic repositories that don't depend on other repositories.
+     */
+    private void createBasicRepositories() {
+        roomRepository = new JsonRoomRepository();
+        officerRepository = new JsonOfficerRepository();
+        detaineeRepository = new JsonDetaineeRepository();
+    }
+
+    /**
+     * Registers repositories in the global registry.
+     */
+    private void registerRepositories() {
+        // Initialize the temporary repositories in the registry
+        RepositoryRegistry.getInstance().registerRepositories(
+                roomRepository,
+                officerRepository,
+                detaineeRepository,
+                null,  // Will be set later
+                null   // Will be set later
+        );
+    }
+
+    /**
+     * Creates repositories that depend on other repositories.
+     */
+    private void createDependentRepositories() {
+        // Now create repositories with dependencies
+        interrogationRepository = new JsonInterrogationRepository(
+                officerRepository, detaineeRepository, roomRepository);
+        meetingRepository = new JsonMeetingRepository(
+                officerRepository, roomRepository);
+
+        // Update the registry with the complete set of repositories
         RepositoryRegistry.getInstance().registerRepositories(
                 roomRepository,
                 officerRepository,
                 detaineeRepository,
                 interrogationRepository,
                 meetingRepository);
-    }
-
-    /**
-     * Initializes all repositories with proper dependencies.
-     */
-    private void initializeRepositories() {
-        // First, create repositories without dependencies
-        roomRepository = new JsonRoomRepository();
-        officerRepository = new JsonOfficerRepository();
-        detaineeRepository = new JsonDetaineeRepository();
-
-        // Then create repositories with dependencies
-        interrogationRepository = new JsonInterrogationRepository(
-                officerRepository, detaineeRepository, roomRepository);
-        meetingRepository = new JsonMeetingRepository(
-                officerRepository, roomRepository);
     }
 
     /**

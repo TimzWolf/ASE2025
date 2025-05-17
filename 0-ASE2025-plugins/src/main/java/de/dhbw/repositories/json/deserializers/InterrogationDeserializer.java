@@ -23,9 +23,10 @@ import java.util.UUID;
 public class InterrogationDeserializer extends StdDeserializer<Interrogation> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    private final OfficerRepository officerRepository;
-    private final DetaineeRepository detaineeRepository;
-    private final RoomRepository roomRepository;
+    private OfficerRepository officerRepository;
+    private DetaineeRepository detaineeRepository;
+    private RoomRepository roomRepository;
+    private boolean repositoriesInitialized = false;
 
     public InterrogationDeserializer(
             OfficerRepository officerRepository,
@@ -40,20 +41,41 @@ public class InterrogationDeserializer extends StdDeserializer<Interrogation> {
             DetaineeRepository detaineeRepository,
             RoomRepository roomRepository) {
         super(vc);
-        this.officerRepository = officerRepository != null ? officerRepository :
-                (RepositoryRegistry.getInstance() != null ? RepositoryRegistry.getInstance().getOfficerRepository() : null);
-        this.detaineeRepository = detaineeRepository != null ? detaineeRepository :
-                (RepositoryRegistry.getInstance() != null ? RepositoryRegistry.getInstance().getDetaineeRepository() : null);
-        this.roomRepository = roomRepository != null ? roomRepository :
-                (RepositoryRegistry.getInstance() != null ? RepositoryRegistry.getInstance().getRoomRepository() : null);
+        this.officerRepository = officerRepository;
+        this.detaineeRepository = detaineeRepository;
+        this.roomRepository = roomRepository;
 
-        if (this.officerRepository == null || this.detaineeRepository == null || this.roomRepository == null) {
-            throw new IllegalStateException("Required repositories not provided or registered");
+        // Check if repositories are already provided
+        this.repositoriesInitialized = (officerRepository != null &&
+                detaineeRepository != null &&
+                roomRepository != null);
+    }
+
+    /**
+     * Ensures repositories are initialized before using them.
+     *
+     * @throws IllegalStateException if repositories cannot be initialized
+     */
+    private void ensureRepositoriesInitialized() {
+        if (!repositoriesInitialized) {
+            // Try to get repositories from registry
+            RepositoryRegistry registry = RepositoryRegistry.getInstance();
+            if (registry.isInitialized()) {
+                this.officerRepository = registry.getOfficerRepository();
+                this.detaineeRepository = registry.getDetaineeRepository();
+                this.roomRepository = registry.getRoomRepository();
+                this.repositoriesInitialized = true;
+            } else {
+                throw new IllegalStateException("Required repositories not provided or registered");
+            }
         }
     }
 
     @Override
     public Interrogation deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
+        // Ensure repositories are available
+        ensureRepositoriesInitialized();
+
         JsonNode node = jp.getCodec().readTree(jp);
 
         // Extract the UUID

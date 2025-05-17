@@ -1,5 +1,6 @@
 package de.dhbw.repositories.json;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.dhbw.aggregates.*;
@@ -23,6 +24,11 @@ public class JsonDomainModule {
     public static void configureObjectMapper(ObjectMapper objectMapper) {
         SimpleModule module = new SimpleModule("DomainModule");
 
+        // Configure object mapper to be more lenient
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
         // Register custom serializers
         module.addSerializer(Officer.class, new OfficerSerializer());
         module.addSerializer(Room.class, new RoomSerializer());
@@ -30,11 +36,18 @@ public class JsonDomainModule {
         module.addSerializer(Interrogation.class, new InterrogationSerializer());
         module.addSerializer(Meeting.class, new MeetingSerializer());
 
+        // Only use this if you created a RankSerializer
+        // module.addSerializer(Rank.class, new RankSerializer());
+
         // Register custom deserializers
         module.addDeserializer(Rank.class, new RankDeserializer());
         module.addDeserializer(Officer.class, new OfficerDeserializer());
         module.addDeserializer(Room.class, new RoomDeserializer());
         module.addDeserializer(Detainee.class, new DetaineeDeserializer());
+
+        // These deserializers will use the repository registry to get the necessary repositories
+        module.addDeserializer(Interrogation.class, new InterrogationDeserializer(null, null, null));
+        module.addDeserializer(Meeting.class, new MeetingDeserializer(null, null));
 
         // Register the module with the ObjectMapper
         objectMapper.registerModule(module);

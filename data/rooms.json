@@ -1,0 +1,9 @@
+[ {
+  "id" : "78f23a64-5910-40f4-91d6-4de2891af3ac",
+  "type" : "MEETING",
+  "available" : true
+}, {
+  "id" : "788ed274-1b75-4df0-9848-1d00fd6926a7",
+  "type" : "INTERROGATION",
+  "available" : true
+} ]
