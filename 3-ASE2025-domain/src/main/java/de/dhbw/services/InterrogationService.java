@@ -52,10 +52,10 @@ public class InterrogationService {
 
         // Check if the officer is already scheduled for another interrogation
         List<Interrogation> officerInterrogations =
-                interrogationRepository.findByOfficerId(officerId);
+                interrogationRepository.findByOfficerId(request.getOfficerId());
 
         boolean isOfficerAvailable = officerInterrogations.stream()
-                .noneMatch(i -> i.getScheduledAt().equals(scheduledTime));
+                .noneMatch(i -> i.getScheduledAt().equals(request.getScheduledTime()));
 
         if (!isOfficerAvailable) {
             throw new IllegalStateException("Officer is already scheduled for another interrogation");
@@ -66,7 +66,7 @@ public class InterrogationService {
         room.book();
         roomRepository.save(room);
 
-        Interrogation interrogation = new Interrogation(officer, detainee, room, scheduledTime);
+        Interrogation interrogation = new Interrogation(officer, request.getDetainee(), room, request.getScheduledTime());
         interrogationRepository.save(interrogation);
 
         return interrogation;
