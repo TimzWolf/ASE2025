@@ -26,8 +26,6 @@ public class MeetingSerializer extends StdSerializer<Meeting> {
     @Override
     public void serialize(Meeting meeting, JsonGenerator gen, SerializerProvider provider) throws IOException {
         try {
-            System.out.println("Serializing meeting with ID: " + meeting.getId());
-
             gen.writeStartObject();
 
             // ID
@@ -91,7 +89,7 @@ public class MeetingSerializer extends StdSerializer<Meeting> {
 
             gen.writeEndObject(); // End meeting
 
-            System.out.println("Successfully serialized meeting " + meeting.getId());
+
         } catch (Exception e) {
             System.err.println("Error serializing Meeting: " + e.getMessage());
             e.printStackTrace();

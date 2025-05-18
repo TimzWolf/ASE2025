@@ -26,8 +26,6 @@ public class InterrogationSerializer extends StdSerializer<Interrogation> {
     @Override
     public void serialize(Interrogation interrogation, JsonGenerator gen, SerializerProvider provider) throws IOException {
         try {
-            System.out.println("Serializing interrogation with ID: " + interrogation.getId());
-
             gen.writeStartObject();
 
             // ID
@@ -85,7 +83,6 @@ public class InterrogationSerializer extends StdSerializer<Interrogation> {
 
             gen.writeEndObject(); // End interrogation
 
-            System.out.println("Successfully serialized interrogation " + interrogation.getId());
         } catch (Exception e) {
             System.err.println("Error serializing Interrogation: " + e.getMessage());
             e.printStackTrace();
